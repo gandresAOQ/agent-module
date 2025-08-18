@@ -10,13 +10,27 @@ import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
 
-public class TimerTransformer implements ClassFileTransformer {
+public class Transformer implements ClassFileTransformer {
+
+    private String platform;
+    private String route;
+
+    public Transformer(String platform, String route) {
+        this.platform = platform;
+        this.route = route;
+    }
 
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) {
-        if (className == null || !className.startsWith("co/com/bancodebogota/openecosystemaccountsmngr")) return null; // include your Quarkus package
-        if (className.startsWith("co/com/bancodebogota/openecosystemaccountsmngr/measure")) return null;
+        if (className == null || !className.startsWith(this.route)) {
+            return null;
+        }
+
+        if (className.startsWith(this.route + "/measure")) {
+            return null;
+        }
+
         System.out.println("Class name: "+ className);
         try {
             ClassPool classPool = ClassPool.getDefault();
@@ -52,15 +66,15 @@ public class TimerTransformer implements ClassFileTransformer {
                             method.getName() + "\");");
 
                 method.insertAfter("agent.timing.util.ExecutionTimer.end(Thread.currentThread().getName(), _className, \"" +
-                        method.getName() + "\", System.nanoTime() - _start);");
+                        method.getName() + "\", System.nanoTime() - _start, \"" + this.getPlatform() + "\");");
 
                 method.insertAfter("agent.timing.util.MemoryUsageTimer.end(Thread.currentThread().getName(), _usedMemoryBefore, _className, \"" +
-                        method.getName() + "\");");
+                        method.getName() + ",\"" + this.getPlatform() + "\");");
 
                 method.insertAfter("agent.timing.util.CpuProcessUsageRecorder.end(Thread.currentThread().getName(), _className, \"" +
-                        method.getName() + "\", _usedCpuProcessBefore);");
+                        method.getName() + "\", _usedCpuProcessBefore \"" + this.getPlatform() + "\");");
                 method.insertAfter("agent.timing.util.CpuSystemUsageRecorder.end(Thread.currentThread().getName(), _className, \"" +
-                        method.getName() + "\", _usedCpuSystemBefore);");
+                        method.getName() + "\", _usedCpuSystemBefore \"" + this.getPlatform() + "\");");
             }
 
             return ctClass.toBytecode();
@@ -93,5 +107,9 @@ public class TimerTransformer implements ClassFileTransformer {
 
     private boolean isStartMethod(CtMethod method) {
         return method.getName().contains("getTypes") || method.getName().contains("getPriority");
+    }
+
+    public String getPlatform() {
+        return platform;
     }
 }
