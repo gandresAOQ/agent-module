@@ -25,7 +25,7 @@ public class CpuSystemUsageRecorder {
         return cpu;
     }
 
-    public static void end(String threadName, String className, String method, double cpuBefore) {
+    public static void end(String threadName, String className, String method, double cpuBefore, String platform) {
         if (cpuBefore > 0) {
             double cpuAfter = CpuSystemUsageRecorder.getSystemCpuLoad();
             double avgCpu = (cpuBefore + cpuAfter) / 2;
@@ -36,17 +36,17 @@ public class CpuSystemUsageRecorder {
                     method,
                     avgCpu
             );
-            EXECUTOR.submit(() -> CpuSystemUsageRecorder.logCpuExecution(className, method, avgCpu));
+            EXECUTOR.submit(() -> CpuSystemUsageRecorder.logCpuExecution(className, method, avgCpu, platform));
         }
     }
 
-    private static void logCpuExecution(String className, String methodName, Double value) {
+    private static void logCpuExecution(String className, String methodName, Double value, String platform) {
         try {
             Map<String, String> data = new HashMap<>();
             data.put("methodName", methodName);
             data.put("className", className);
             data.put("fullName", className + "." + methodName);
-            MongoReporter.report(data, "cpu_system", value);
+            MongoReporter.report(data, "cpu_system", value, platform);
         } catch (Exception e) {
             System.err.println("Failed to log cpu execution: " + e.getMessage());
         }
