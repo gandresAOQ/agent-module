@@ -1,7 +1,7 @@
 agent/timing/mongo/MongoReporter.class
 agent/timing/util/ExecutionTimer.class
+agent/timing/agent/Agent.class
 agent/timing/util/CpuProcessUsageRecorder.class
+agent/timing/agent/Transformer.class
 agent/timing/util/CpuSystemUsageRecorder.class
 agent/timing/util/MemoryUsageTimer.class
-agent/timing/agent/TimerTransformer.class
-agent/timing/agent/TimerAgent.class

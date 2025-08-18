@@ -14,11 +14,11 @@ public class MongoReporter {
 
     private static MongoClient mongoClient;
 
-    public static void report(Map<String, String> data, String metric, Double metricValue, String platform) {
+    public static void report(Map<String, String> data, String metric, Double metricValue, String application, String platform) {
         Document document = new Document();
         document.append(metric, metricValue);
+        document.append("application", application);
         document.append("platform", platform);
-        document.append("application", "ecosystem_account");
         data.forEach((key, value) -> document.append(key, value));
 
         MongoReporter

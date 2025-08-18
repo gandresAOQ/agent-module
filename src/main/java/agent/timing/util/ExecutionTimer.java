@@ -15,18 +15,18 @@ public class ExecutionTimer {
         System.out.println(">>> [START] " + threadName + " - " + method);
     }
 
-    public static void end(String threadName, String className, String method, long durationNano, String platform) {
+    public static void end(String threadName, String className, String method, long durationNano, String application, String platform) {
         System.out.println("<<< [END] " + threadName + " - " + method + " - Time: " + durationNano + " ns");
-        EXECUTOR.submit(() -> logTimeExecution(className, method, (double) durationNano, platform));
+        EXECUTOR.submit(() -> logTimeExecution(className, method, (double) durationNano, application, platform));
     }
 
-    private static void logTimeExecution(String className, String methodName, Double value, String platform) {
+    private static void logTimeExecution(String className, String methodName, Double value, String application, String platform) {
         try {
             Map<String, String> data = new HashMap<>();
             data.put("methodName", methodName);
             data.put("className", className);
             data.put("fullName", className + "." + methodName);
-            MongoReporter.report(data, "time", value, platform);
+            MongoReporter.report(data, "time", value, application, platform);
         } catch (Exception e) {
             System.err.println("Failed to log time execution: " + e.getMessage());
         }

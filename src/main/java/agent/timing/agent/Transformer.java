@@ -12,11 +12,9 @@ import java.util.Arrays;
 
 public class Transformer implements ClassFileTransformer {
 
-    private String platform;
     private String route;
 
-    public Transformer(String platform, String route) {
-        this.platform = platform;
+    public Transformer(String route) {
         this.route = route;
     }
 
@@ -66,15 +64,15 @@ public class Transformer implements ClassFileTransformer {
                             method.getName() + "\");");
 
                 method.insertAfter("agent.timing.util.ExecutionTimer.end(Thread.currentThread().getName(), _className, \"" +
-                        method.getName() + "\", System.nanoTime() - _start, \"" + this.getPlatform() + "\");");
+                        method.getName() + "\", System.nanoTime() - _start" + ",\"" + this.getApplication() + "\"" + ",\"" + this.getPlatform() + "\");");
 
                 method.insertAfter("agent.timing.util.MemoryUsageTimer.end(Thread.currentThread().getName(), _usedMemoryBefore, _className, \"" +
-                        method.getName() + ",\"" + this.getPlatform() + "\");");
+                        method.getName() + ",\"" + this.getApplication() + "\"" + ",\"" + this.getPlatform() + "\");");
 
                 method.insertAfter("agent.timing.util.CpuProcessUsageRecorder.end(Thread.currentThread().getName(), _className, \"" +
-                        method.getName() + "\", _usedCpuProcessBefore \"" + this.getPlatform() + "\");");
+                        method.getName() + "\", _usedCpuProcessBefore \"" + ",\"" + this.getApplication() + "\"" + this.getPlatform() + "\");");
                 method.insertAfter("agent.timing.util.CpuSystemUsageRecorder.end(Thread.currentThread().getName(), _className, \"" +
-                        method.getName() + "\", _usedCpuSystemBefore \"" + this.getPlatform() + "\");");
+                        method.getName() + "\", _usedCpuSystemBefore \"" + ",\"" + this.getApplication() + "\"" + this.getPlatform() + "\");");
             }
 
             return ctClass.toBytecode();
@@ -110,6 +108,10 @@ public class Transformer implements ClassFileTransformer {
     }
 
     public String getPlatform() {
-        return platform;
+        return System.getenv("PLATFORM");
+    }
+
+    public String getApplication() {
+        return System.getenv("APPLICATION");
     }
 }

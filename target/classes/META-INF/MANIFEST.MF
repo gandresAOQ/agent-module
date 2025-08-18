@@ -1,4 +1,4 @@
-Premain-Class: agent.timing.agent.TimerAgent
+Premain-Class: agent.timing.agent.Agent
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true
 Boot-Class-Path: agent-module-1.0.0.jar
