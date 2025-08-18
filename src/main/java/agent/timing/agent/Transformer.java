@@ -64,15 +64,16 @@ public class Transformer implements ClassFileTransformer {
                             method.getName() + "\");");
 
                 method.insertAfter("agent.timing.util.ExecutionTimer.end(Thread.currentThread().getName(), _className, \"" +
-                        method.getName() + "\", System.nanoTime() - _start" + ",\"" + this.getApplication() + "\"" + ",\"" + this.getPlatform() + "\");");
+                        method.getName() + "\", System.nanoTime() - _start, " + "\"" + this.getApplication() + "\", " + "\"" + this.getPlatform() + "\");");
 
                 method.insertAfter("agent.timing.util.MemoryUsageTimer.end(Thread.currentThread().getName(), _usedMemoryBefore, _className, \"" +
-                        method.getName() + ",\"" + this.getApplication() + "\"" + ",\"" + this.getPlatform() + "\");");
+                        method.getName() + "\", \"" + this.getApplication() + "\", " + "\"" + this.getPlatform() + "\");");
 
                 method.insertAfter("agent.timing.util.CpuProcessUsageRecorder.end(Thread.currentThread().getName(), _className, \"" +
-                        method.getName() + "\", _usedCpuProcessBefore \"" + ",\"" + this.getApplication() + "\"" + this.getPlatform() + "\");");
+                        method.getName() + "\", _usedCpuProcessBefore, \"" + this.getApplication() + "\", \"" + this.getPlatform() + "\");");
+
                 method.insertAfter("agent.timing.util.CpuSystemUsageRecorder.end(Thread.currentThread().getName(), _className, \"" +
-                        method.getName() + "\", _usedCpuSystemBefore \"" + ",\"" + this.getApplication() + "\"" + this.getPlatform() + "\");");
+                        method.getName() + "\", _usedCpuSystemBefore, \"" + this.getApplication() + "\", \"" + this.getPlatform() + "\");");
             }
 
             return ctClass.toBytecode();
