@@ -50,7 +50,11 @@ public class CpuProcessUsageRecorder {
         int tries = 2;
 
         while (tries > 0) {
-            Thread.sleep(500);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException interruptedException) {
+                System.out.println("Error to sleep process");
+            }
             totalLoad += osBean.getProcessCpuLoad();
             tries--;
         }
