@@ -45,24 +45,8 @@ public class CpuProcessUsageRecorder {
     }
 
     private static double getProcessCpuLoad() {
-
-        double totalLoad = 0;
-        int tries = 2;
-
-        while (tries > 0) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException interruptedException) {
-                System.out.println("Error to sleep process");
-            } catch (Exception e) {
-                System.out.println("Error to sleep process: " + e.getMessage());
-            }
-            totalLoad += osBean.getProcessCpuLoad();
-            tries--;
-        }
-
         // Returns a double in [0.0,1.0]; multiply by 100 for %
-        return (totalLoad/tries) * 100;
+        return osBean.getProcessCpuLoad() * 100;
     }
 
     private static double getSystemCpuLoad() {
