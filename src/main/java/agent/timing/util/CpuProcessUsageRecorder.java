@@ -44,7 +44,7 @@ public class CpuProcessUsageRecorder {
         }
     }
 
-    private static double getProcessCpuLoad() throws InterruptedException {
+    private static double getProcessCpuLoad() {
 
         double totalLoad = 0;
         int tries = 2;
