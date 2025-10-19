@@ -44,9 +44,19 @@ public class CpuProcessUsageRecorder {
         }
     }
 
-    private static double getProcessCpuLoad() {
+    private static double getProcessCpuLoad() throws InterruptedException {
+
+        double totalLoad = 0;
+        int tries = 2;
+
+        while (tries > 0) {
+            Thread.sleep(500);
+            totalLoad += osBean.getProcessCpuLoad();
+            tries--;
+        }
+
         // Returns a double in [0.0,1.0]; multiply by 100 for %
-        return osBean.getProcessCpuLoad() * 100;
+        return (totalLoad/tries) * 100;
     }
 
     private static double getSystemCpuLoad() {
